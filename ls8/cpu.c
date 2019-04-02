@@ -64,7 +64,7 @@ void cpu_load(struct cpu *cpu, int argc, char *file)
     // skip line if line equals endptr
     if (line == endptr)
       continue;
-
+    // assing ram at address to binary value val
     cpu->ram[address++] = val;
   }
 }
@@ -78,6 +78,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   {
   case ALU_MUL:
     // TODO
+    cpu->registers[regA] *= cpu->registers[regB];
     break;
 
     // TODO: implement more ALU ops
@@ -117,7 +118,7 @@ void cpu_run(struct cpu *cpu)
       cpu->pc += 2;
       break;
     case MUL:
-      cpu->registers[operandA] *= cpu->registers[operandB];
+      alu(cpu, ALU_MUL, operandA, operandB);
       cpu->pc += 3;
       break;
     default:
