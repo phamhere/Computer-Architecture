@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define DATA_LEN 6
 
@@ -44,7 +45,7 @@ void cpu_load(struct cpu *cpu, int argc, char *file)
   if (argc != 2)
   {
     printf("usage: fileio filename\n");
-    return 1;
+    exit(1);
   }
   // opening file
   fp = fopen(file, "r");
@@ -52,7 +53,7 @@ void cpu_load(struct cpu *cpu, int argc, char *file)
   if (fp == NULL)
   {
     printf("Error opening file %s\n", file);
-    return 2;
+    exit(2);
   }
   // loop until file ends
   while (fgets(line, 1024, fp) != NULL)
@@ -114,6 +115,10 @@ void cpu_run(struct cpu *cpu)
     case PRN:
       printf("%d\n", cpu->registers[operandA]);
       cpu->pc += 2;
+      break;
+    case MUL:
+      cpu->registers[operandA] *= cpu->registers[operandB];
+      cpu->pc += 3;
       break;
     default:
       printf("Unrecognized instruction\n");
