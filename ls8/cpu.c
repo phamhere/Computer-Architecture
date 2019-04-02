@@ -17,26 +17,55 @@ void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
-void cpu_load(struct cpu *cpu)
+void cpu_load(struct cpu *cpu, int argc, char *file)
 {
-  char data[DATA_LEN] = {
-      // From print8.ls8
-      0b10000010, // LDI R0,8
-      0b00000000,
-      0b00001000,
-      0b01000111, // PRN R0
-      0b00000000,
-      0b00000001 // HLT
-  };
+  // char data[DATA_LEN] = {
+  //     // From print8.ls8
+  //     0b10000010, // LDI R0,8
+  //     0b00000000,
+  //     0b00001000,
+  //     0b01000111, // PRN R0
+  //     0b00000000,
+  //     0b00000001 // HLT
+  // };
 
-  int address = 0;
+  // int address = 0;
 
-  for (int i = 0; i < DATA_LEN; i++)
-  {
-    cpu->ram[address++] = data[i];
-  }
+  // for (int i = 0; i < DATA_LEN; i++)
+  // {
+  //   cpu->ram[address++] = data[i];
+  // }
 
   // TODO: Replace this with something less hard-coded
+  FILE *fp;
+  char line[1024];
+  int address = 0;
+  // if the number of arguments in command line isn't 2, print usage and stop
+  if (argc != 2)
+  {
+    printf("usage: fileio filename\n");
+    return 1;
+  }
+  // opening file
+  fp = fopen(file, "r");
+  // if file opening results in null, print error and stop
+  if (fp == NULL)
+  {
+    printf("Error opening file %s\n", file);
+    return 2;
+  }
+  // loop until file ends
+  while (fgets(line, 1024, fp) != NULL)
+  {
+    char *endptr;
+    // storing the binary value of line in val and address of first invalid char in &endptr
+    unsigned char val = strtoul(line, &endptr, 2);
+    // skip line if line equals endptr
+    if (line == endptr)
+      continue;
+
+    cpu->ram[address++] = val;
+  }
 }
 
 /**
