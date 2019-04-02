@@ -1,4 +1,6 @@
 #include "cpu.h"
+#include <stdio.h>
+#include <string.h>
 
 #define DATA_LEN 6
 
@@ -85,6 +87,7 @@ void cpu_run(struct cpu *cpu)
       cpu->pc += 2;
       break;
     default:
+      printf("Unrecognized instruction\n");
       cpu->pc++;
       break;
     }
@@ -98,6 +101,6 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
-  cpu->registers = calloc(sizeof(unsigned char) * 8);
-  cpu->ram = calloc(sizeof(unsigned char) * 256);
+  memset(cpu->registers, 0, sizeof(unsigned char) * 8);
+  memset(cpu->ram, 0, sizeof(unsigned char) * 256);
 }
