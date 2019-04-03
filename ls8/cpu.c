@@ -90,7 +90,8 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
  */
 void cpu_run(struct cpu *cpu)
 {
-  int running = 1; // True until we get a HLT instruction
+  int running = 1;         // True until we get a HLT instruction
+  cpu->registers[7] = 255; // setting stack pointer to index 255 in ram
 
   while (running)
   {
@@ -120,6 +121,16 @@ void cpu_run(struct cpu *cpu)
     case MUL:
       alu(cpu, ALU_MUL, operandA, operandB);
       cpu->pc += 3;
+      break;
+    case PUSH:
+      cpu->registers[7]--;
+      cpu_ram_write(cpu, cpu->registers[7], cpu->registers[operandA]);
+      cpu->pc += 2;
+      break;
+    case POP:
+      cpu->registers[operandA] = cpu_ram_read(cpu, cpu->registers[7]);
+      cpu->registers[7]++;
+      cpu->pc += 2;
       break;
     default:
       printf("Unrecognized instruction\n");
