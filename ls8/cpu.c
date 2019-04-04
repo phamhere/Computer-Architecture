@@ -94,7 +94,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 void cpu_run(struct cpu *cpu)
 {
   int running = 1;         // True until we get a HLT instruction
-  cpu->registers[7] = 255; // setting stack pointer to index 255 in ram
+  cpu->registers[7] = 243; // setting stack pointer to index 255 in ram
 
   while (running)
   {
