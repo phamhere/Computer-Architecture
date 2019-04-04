@@ -82,6 +82,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
 
     // TODO: implement more ALU ops
+  case ALU_ADD:
+    cpu->registers[regA] += cpu->registers[regB];
+    break;
   }
 }
 
@@ -131,6 +134,19 @@ void cpu_run(struct cpu *cpu)
       cpu->registers[operandA] = cpu_ram_read(cpu, cpu->registers[7]);
       cpu->registers[7]++;
       cpu->pc += 2;
+      break;
+    case CALL:
+      cpu->registers[7]--;
+      cpu_ram_write(cpu, cpu->registers[7], cpu->pc + 2);
+      cpu->pc = cpu->registers[operandA];
+      break;
+    case RET:
+      cpu->pc = cpu_ram_read(cpu, cpu->registers[7]);
+      cpu->registers[7]++;
+      break;
+    case ADD:
+      alu(cpu, ALU_ADD, operandA, operandB);
+      cpu->pc += 3;
       break;
     default:
       printf("Unrecognized instruction\n");
