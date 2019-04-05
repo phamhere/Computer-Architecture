@@ -111,6 +111,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->fl = cpu->fl & 0b00000101;
     }
     break;
+  case ALU_AND:
+    cpu->registers[regA] = cpu->registers[regA] & cpu->registers[regB];
+    break;
   }
 }
 
@@ -200,6 +203,10 @@ void cpu_run(struct cpu *cpu)
       {
         cpu->pc += 2;
       }
+      break;
+    case AND:
+      alu(cpu, ALU_AND, operandA, operandB);
+      cpu->pc += 3;
       break;
     default:
       printf("Unrecognized instruction\n");
