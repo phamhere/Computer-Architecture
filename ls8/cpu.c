@@ -86,9 +86,30 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->registers[regA] += cpu->registers[regB];
     break;
   case ALU_CMP:
-    cpu->registers[regA] == cpu->registers[regB] ? cpu->fl | 00000001 : cpu->fl & 00000110;
-    cpu->registers[regA] < cpu->registers[regB] ? cpu->fl | 00000100 : cpu->fl & 00000011;
-    cpu->registers[regA] > cpu->registers[regB] ? cpu->fl | 00000010 : cpu->fl & 00000101;
+    if (cpu->registers[regA] == cpu->registers[regB])
+    {
+      cpu->fl = cpu->fl | 0b00000001;
+    }
+    else
+    {
+      cpu->fl = cpu->fl & 0b00000110;
+    }
+    if (cpu->registers[regA] < cpu->registers[regB])
+    {
+      cpu->fl = cpu->fl | 0b00000100;
+    }
+    else
+    {
+      cpu->fl = cpu->fl & 0b00000011;
+    }
+    if (cpu->registers[regA] > cpu->registers[regB])
+    {
+      cpu->fl = cpu->fl | 0b00000010;
+    }
+    else
+    {
+      cpu->fl = cpu->fl & 0b00000101;
+    }
     break;
   }
 }
@@ -161,15 +182,23 @@ void cpu_run(struct cpu *cpu)
       cpu->pc = cpu->registers[operandA];
       break;
     case JEQ:
-      if (cpu->fl & 00000001 == 00000001)
+      if ((cpu->fl & 0b00000001) == 1)
       {
         cpu->pc = cpu->registers[operandA];
       }
+      else
+      {
+        cpu->pc += 2;
+      }
       break;
     case JNE:
-      if (cpu->fl & 00000001 == 00000000)
+      if ((cpu->fl & 0b00000001) == 0)
       {
         cpu->pc = cpu->registers[operandA];
+      }
+      else
+      {
+        cpu->pc += 2;
       }
       break;
     default:
