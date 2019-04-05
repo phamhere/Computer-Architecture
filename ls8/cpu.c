@@ -148,6 +148,9 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_ADD, operandA, operandB);
       cpu->pc += 3;
       break;
+    case JMP:
+      cpu->pc = cpu->registers[operandA];
+      break;
     default:
       printf("Unrecognized instruction\n");
       cpu->pc++;
@@ -163,6 +166,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
+  cpu->fl = 0;
   memset(cpu->registers, 0, sizeof(unsigned char) * 8);
   memset(cpu->ram, 0, sizeof(unsigned char) * 256);
 }

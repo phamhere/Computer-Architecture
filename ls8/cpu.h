@@ -7,6 +7,7 @@ struct cpu
   // TODO
   // PC
   unsigned char pc;
+  unsigned char fl;
   // registers (array)
   unsigned char registers[8];
   // ram (array)
@@ -36,6 +37,7 @@ enum alu_op
 #define CALL 0b01010000
 #define RET 0b00010001
 #define ADD 0b10100000
+#define JMP 0b01010100
 
 // Function declarations
 
