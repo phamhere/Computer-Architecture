@@ -117,6 +117,26 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_OR:
     cpu->registers[regA] = cpu->registers[regA] | cpu->registers[regB];
     break;
+  case ALU_XOR:
+    cpu->registers[regA] = cpu->registers[regA] ^ cpu->registers[regB];
+    break;
+  case ALU_NOT:
+    cpu->registers[regA] = ~cpu->registers[regA];
+    break;
+  case ALU_SHL:
+    cpu->registers[regA] = cpu->registers[regA] << cpu->registers[regB];
+    break;
+  case ALU_SHR:
+    cpu->registers[regA] = cpu->registers[regA] >> cpu->registers[regB];
+    break;
+  case ALU_MOD:
+    if (cpu->registers[regB] == 0)
+    {
+      printf("Error with MOD: Modding a value with 0");
+      exit(1);
+    }
+    cpu->registers[regA] %= cpu->registers[regB];
+    break;
   }
 }
 
@@ -213,6 +233,26 @@ void cpu_run(struct cpu *cpu)
       break;
     case OR:
       alu(cpu, ALU_OR, operandA, operandB);
+      cpu->pc += 3;
+      break;
+    case XOR:
+      alu(cpu, ALU_XOR, operandA, operandB);
+      cpu->pc += 3;
+      break;
+    case NOT:
+      alu(cpu, ALU_NOT, operandA, operandB);
+      cpu->pc += 2;
+      break;
+    case SHL:
+      alu(cpu, ALU_SHL, operandA, operandB);
+      cpu->pc += 3;
+      break;
+    case SHR:
+      alu(cpu, ALU_SHR, operandA, operandB);
+      cpu->pc += 3;
+      break;
+    case MOD:
+      alu(cpu, ALU_MOD, operandA, operandB);
       cpu->pc += 3;
       break;
     default:
